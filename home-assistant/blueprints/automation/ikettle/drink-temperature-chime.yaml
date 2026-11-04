@@ -1,0 +1,38 @@
+blueprint:
+  name: iKettle drinking temperature chime
+  description: Play a short chime when the kettle reaches its selected drinking temperature.
+  domain: automation
+  homeassistant:
+    min_version: 2026.10.4
+  input:
+    kettle_event:
+      name: Drinking temperature reached
+      selector:
+        entity:
+          filter:
+            - domain: event
+    speaker:
+      name: Speaker
+      selector:
+        entity:
+          filter:
+            - domain: media_player
+
+triggers:
+  - trigger: event.received
+    target:
+      entity_id: !input kettle_event
+    options:
+      event_type:
+        - drink_temperature_reached
+
+actions:
+  - action: media_player.play_media
+    target:
+      entity_id: !input speaker
+    data:
+      media_content_id: media-source://media_source/local/ikettle-drink-temperature.mp3
+      media_content_type: audio/mpeg
+      announce: true
+
+mode: single

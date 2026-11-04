@@ -1,0 +1,13 @@
+.venv/
+.esphome/
+build/
+__pycache__/
+fixture-config-*/
+config-test-*/
+*.pyc
+*.bin
+*.elf
+*.log
+*.esphomebundle*
+secrets.yaml
+!secrets.yaml.example

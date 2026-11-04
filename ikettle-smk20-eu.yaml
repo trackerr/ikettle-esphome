@@ -1,0 +1,108 @@
+substitutions:
+  kettle_heater_watts: "2200"  # Example only. Use the rating of your own kettle.
+
+esphome:
+  name: ikettle-smk20-eu
+  friendly_name: iKettle SMK20-EU
+
+esp8266:
+  board: esp12e
+  restore_from_flash: true
+  framework:
+    version: 3.1.2
+  toolchain: platformio
+
+logger:
+  baud_rate: 0
+
+api:
+  batch_delay: 0ms
+
+packages:
+  recovery: !include packages/recovery.yaml
+  # Add your own measured calibration substitutions before enabling this package.
+  # water: !include packages/water.yaml
+  drinks: !include packages/drinks.yaml
+  diagnostics: !include packages/diagnostics.yaml
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [ikettle_mcu]
+
+uart:
+  id: mcu_uart
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  baud_rate: 115200
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+  rx_buffer_size: 1024
+
+ikettle_mcu:
+  id: kettle
+  uart_id: mcu_uart
+  restore_selection: true
+  uart_trace:
+    name: UART trace
+    entity_category: diagnostic
+    restore_mode: ALWAYS_OFF
+  trace_timeout: 120s
+  trace_rate_limit: 8
+  target_temperature:
+    id: kettle_target_temperature
+    name: Next target temperature
+  keep_warm_minutes:
+    name: Next keep-warm duration
+  temperature:
+    name: Temperature
+  water_raw:
+    id: kettle_water_raw
+    name: Water sensor raw
+  base_raw:
+    name: Calibration baseline raw
+  default_temperature:
+    name: Physical button default temperature
+  default_keep_warm:
+    name: Physical button default keep-warm duration
+  default_formula_temperature:
+    name: Physical button default cool-down target
+  status_age:
+    name: Status sample age
+  on_base:
+    name: On base
+  protocol_ready:
+    name: Kettle communication ready
+  activity:
+    name: Activity
+  mcu_firmware:
+    name: Kettle MCU firmware
+  protocol_error:
+    name: Protocol message
+  command_status:
+    name: Command status
+  start:
+    name: Start heating
+  start_formula:
+    name: Boil to 100 and cool to target
+  stop:
+    name: Stop cycle
+  stop_keep_warm:
+    name: Stop keep warm
+  refresh:
+    name: Refresh kettle data
+  cycle_start_temperature:
+    name: Last cycle starting temperature
+    force_update: true
+  cycle_heating_time:
+    name: Last cycle heating duration
+    force_update: true
+  cycle_keep_warm_time:
+    name: Last cycle keep-warm duration
+    force_update: true
+  heater_power_watts: ${kettle_heater_watts}
+  cycle_heating_energy:
+    name: Last cycle estimated heating energy
+    force_update: true

@@ -1,0 +1,31 @@
+wifi:
+  ssid: !secret ikettle_wifi_ssid
+  password: !secret ikettle_wifi_password
+  reboot_timeout: 0s
+  ap:
+    ssid: !secret ikettle_recovery_ap_ssid
+    password: !secret ikettle_recovery_ap_password
+    ap_timeout: 90s
+
+api:
+  reboot_timeout: 0s
+  encryption:
+    key: !secret ikettle_api_encryption_key
+
+ota:
+  - platform: esphome
+    encryption:
+
+safe_mode:
+  num_attempts: 3
+  boot_is_good_after: 60s
+  boot_is_good_on_shutdown: false
+  reboot_timeout: 10min
+
+# The captive portal's recovery upload is available on the WPA-protected fallback AP.
+captive_portal:
+
+button:
+  - platform: safe_mode
+    name: Restart in safe mode
+    entity_category: config

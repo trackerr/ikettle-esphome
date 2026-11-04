@@ -1,0 +1,44 @@
+substitutions:
+  ikettle_profile_version: "0.2.0"
+
+esphome:
+  project:
+    name: ikettle.smk20-eu
+    version: ${ikettle_profile_version}
+  on_boot:
+    priority: -100
+    then:
+      - text_sensor.template.publish:
+          id: kettle_esp_firmware_version
+          state: ${ikettle_profile_version}
+
+debug:
+
+sensor:
+  - platform: wifi_signal
+    name: Wi-Fi signal
+    update_interval: 15s
+
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: ESP reset reason
+  - platform: version
+    name: ESPHome version
+    hide_timestamp: true
+    hide_hash: true
+  - platform: template
+    id: kettle_esp_firmware_version
+    name: iKettle ESP firmware version
+    entity_category: diagnostic
+    icon: mdi:chip
+    update_interval: never
+
+ikettle_mcu:
+  mcu_reply_age:
+    name: Time since last MCU reply
+    filters:
+      - throttle: 5s
+  serial_errors:
+    name: Serial errors
+    icon: mdi:counter

@@ -1,0 +1,83 @@
+# CODEGEN/COMPILE FIXTURE ONLY. This board/pin mapping does not identify the kettle.
+# No real credentials, addresses, OTA target or device-flashing command is supplied.
+esphome:
+  name: ikettle-offline-lab
+  friendly_name: iKettle Offline Lab
+
+esp8266:
+  board: d1_mini
+  framework:
+    version: 3.1.2
+  toolchain: platformio
+
+logger:
+  baud_rate: 0
+
+# Shared recovery template. Offline tests supply private temporary dummy secrets.
+packages:
+  recovery: !include recovery.yaml
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [ikettle_mcu]
+
+uart:
+  id: mcu_uart
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  baud_rate: 115200
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+  rx_buffer_size: 1024
+
+ikettle_mcu:
+  id: kettle
+  uart_id: mcu_uart
+  restore_selection: false
+  uart_trace:
+    name: UART trace
+    entity_category: diagnostic
+    restore_mode: ALWAYS_OFF
+  trace_timeout: 120s
+  trace_rate_limit: 8
+  target_temperature:
+    name: Next target temperature
+  keep_warm_minutes:
+    name: Next keep-warm duration
+  temperature:
+    name: Temperature
+  water_raw:
+    name: Water sensor raw
+  base_raw:
+    name: Calibration baseline raw
+  default_temperature:
+    name: Physical button default temperature
+  default_keep_warm:
+    name: Physical button default keep-warm duration
+  default_formula_temperature:
+    name: Physical button default cool-down target
+  status_age:
+    name: Status sample age
+  on_base:
+    name: On base
+  protocol_ready:
+    name: Kettle communication ready
+  activity:
+    name: Activity
+  mcu_firmware:
+    name: Kettle MCU firmware
+  protocol_error:
+    name: Protocol message
+  start:
+    name: Start heating
+  stop:
+    name: Stop cycle
+  start_formula:
+    name: Boil to 100 and cool to target
+  stop_keep_warm:
+    name: Stop keep warm
+  refresh:
+    name: Refresh kettle data

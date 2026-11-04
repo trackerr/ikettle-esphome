@@ -1,0 +1,42 @@
+# Use this in a manual Home Assistant card. Replace every entity ID with yours.
+type: entities
+title: iKettle
+show_header_toggle: false
+entities:
+  - sensor.ikettle_smk20_eu_temperature
+  - binary_sensor.ikettle_smk20_eu_on_base
+  - sensor.ikettle_smk20_eu_activity
+  - sensor.ikettle_smk20_eu_command_status
+  # Enable these rows only after calibrating the optional water package.
+  # - sensor.ikettle_smk20_eu_water_volume
+  # - sensor.ikettle_smk20_eu_water_volume_in_cups
+  # - binary_sensor.ikettle_smk20_eu_low_water
+  - type: section
+    label: Controls
+  - number.ikettle_smk20_eu_next_target_temperature
+  - number.ikettle_smk20_eu_next_keep_warm_duration
+  - button.ikettle_smk20_eu_green_tea_75_degc
+  - button.ikettle_smk20_eu_black_tea_95_degc
+  - button.ikettle_smk20_eu_filter_coffee_92_degc
+  - button.ikettle_smk20_eu_start_heating
+  - button.ikettle_smk20_eu_boil_to_100_and_cool_to_target
+  - button.ikettle_smk20_eu_stop_cycle
+  - button.ikettle_smk20_eu_stop_keep_warm
+  - type: section
+    label: Drinking temperature
+  - number.ikettle_smk20_eu_drinking_temperature
+  - event.ikettle_smk20_eu_drinking_temperature_reached
+  - type: section
+    label: Last cycle
+  - sensor.ikettle_smk20_eu_last_cycle_starting_temperature
+  - sensor.ikettle_smk20_eu_last_cycle_heating_duration
+  - sensor.ikettle_smk20_eu_last_cycle_keep_warm_duration
+  - sensor.ikettle_smk20_eu_last_cycle_estimated_heating_energy
+  - type: section
+    label: Diagnostics
+  - binary_sensor.ikettle_smk20_eu_kettle_communication_ready
+  - sensor.ikettle_smk20_eu_time_since_last_mcu_reply
+  - sensor.ikettle_smk20_eu_serial_errors
+  - sensor.ikettle_smk20_eu_wi_fi_signal
+  - sensor.ikettle_smk20_eu_esp_reset_reason
+  - sensor.ikettle_smk20_eu_ikettle_esp_firmware_version

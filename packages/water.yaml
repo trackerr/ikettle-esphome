@@ -1,0 +1,71 @@
+substitutions:
+  kettle_cup_ml: "250"
+  kettle_low_water_ml: "500"
+
+ikettle_mcu:
+  water_raw:
+    on_value:
+      then:
+        - lambda: |-
+            constexpr float cup_ml = ${kettle_cup_ml};
+            constexpr float low_water_ml = ${kettle_low_water_ml};
+            constexpr float empty_raw = ${kettle_empty_raw};
+            constexpr float empty_cutoff = ${kettle_empty_cutoff_raw};
+            constexpr float at_500 = ${kettle_500_raw};
+            constexpr float at_1000 = ${kettle_1000_raw};
+            constexpr float at_1500 = ${kettle_1500_raw};
+            static_assert(cup_ml > 0.0f && low_water_ml >= 0.0f, "Invalid kettle volume thresholds");
+            static_assert(empty_raw <= empty_cutoff && empty_cutoff < at_500 && at_500 < at_1000 && at_1000 < at_1500,
+                          "Water calibration requires increasing raw values");
+
+            // The MCU component reports NaN when the jug is off the base or the data is stale.
+            if (!std::isfinite(x)) {
+              if (std::isfinite(id(kettle_water_volume).state)) {
+                id(kettle_water_volume).publish_state(NAN);
+                id(kettle_water_cups).publish_state(NAN);
+              }
+              id(kettle_low_water).invalidate_state();
+              return;
+            }
+
+            // Interpolate the owner's cold-water calibration points and round to 50 mL.
+            float volume_ml = 0.0f;
+            if (x > at_1000) {
+              volume_ml = 1000.0f + (x - at_1000) * 500.0f / (at_1500 - at_1000);
+            } else if (x > at_500) {
+              volume_ml = 500.0f + (x - at_500) * 500.0f / (at_1000 - at_500);
+            } else if (x > empty_cutoff) {
+              volume_ml = (x - empty_raw) * 500.0f / (at_500 - empty_raw);
+            }
+            const float displayed_ml = std::round(volume_ml / 50.0f) * 50.0f;
+            if (id(kettle_water_volume).state != displayed_ml) {
+              id(kettle_water_volume).publish_state(displayed_ml);
+              id(kettle_water_cups).publish_state(displayed_ml / cup_ml);
+            }
+
+            // Advisory threshold only. The original MCU still decides whether heating is safe.
+            id(kettle_low_water).publish_state(displayed_ml < low_water_ml);
+
+sensor:
+  - platform: template
+    id: kettle_water_volume
+    name: Water volume
+    device_class: volume
+    state_class: measurement
+    unit_of_measurement: mL
+    accuracy_decimals: 0
+    update_interval: never
+  - platform: template
+    id: kettle_water_cups
+    name: Water volume in cups
+    icon: mdi:cup-water
+    unit_of_measurement: cups
+    state_class: measurement
+    accuracy_decimals: 1
+    update_interval: never
+
+binary_sensor:
+  - platform: template
+    id: kettle_low_water
+    name: Low water
+    device_class: problem

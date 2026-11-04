@@ -1,0 +1,54 @@
+button:
+  - platform: template
+    name: Green tea (75 °C)
+    icon: mdi:tea-outline
+    on_press:
+      - number.set:
+          id: kettle_target_temperature
+          value: 75
+  - platform: template
+    name: Black tea (95 °C)
+    icon: mdi:tea
+    on_press:
+      - number.set:
+          id: kettle_target_temperature
+          value: 95
+  - platform: template
+    name: Filter coffee (92 °C)
+    icon: mdi:coffee
+    on_press:
+      - number.set:
+          id: kettle_target_temperature
+          value: 92
+
+number:
+  - platform: template
+    id: kettle_drink_temperature
+    name: Drinking temperature
+    unit_of_measurement: °C
+    min_value: 40
+    max_value: 90
+    step: 1
+    initial_value: 65
+    optimistic: true
+    restore_value: true
+    mode: box
+
+event:
+  - platform: template
+    id: kettle_drink_temperature_event
+    name: Drinking temperature reached
+    icon: mdi:thermometer-check
+    event_types:
+      - drink_temperature_reached
+
+interval:
+  - interval: 250ms
+    then:
+      - if:
+          condition:
+            lambda: return id(kettle).check_drink_temperature(id(kettle_drink_temperature).state);
+          then:
+            - event.trigger:
+                id: kettle_drink_temperature_event
+                event_type: drink_temperature_reached
