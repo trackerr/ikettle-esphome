@@ -6,7 +6,7 @@ The AT application matches the version observed on the tested SMK20-EU. The clea
 
 ## Obtain and verify the image
 
-Download the [release ZIP](https://github.com/trackerr/ikettle-esphome/releases/tag/stock-at40-sdk130-4mib-v1) or generate an equivalent package locally from the [original Espressif SDK archive](https://bbs.espressif.com/download/file.php?id=664).
+Download the [recovery ZIP](../recovery/stock-at40-sdk130-4mib.zip?raw=1) or generate an equivalent package locally from the [original Espressif SDK archive](https://bbs.espressif.com/download/file.php?id=664).
 
 ```shell
 python tools/build-clean-stock.py --sdk PATH_TO_SDK_ZIP --output stock-at40-sdk130-4mib.zip
@@ -39,4 +39,4 @@ Disconnect power and the UART adapter, remove the `GPIO0` strap if it is still f
 
 ## Bench verification
 
-The release image was flashed to a separate 4 MiB ESP8266EX. Esptool verified the complete 4 MiB against the binary. It booted into AT 0.40.0.0 with SDK 1.3.0 and reported no station association. The module scanned for nearby Wi-Fi networks and a separate computer detected its temporary test access point with the matching BSSID. The temporary settings were gone after reset. These checks cover the ESP firmware and radio. Testing an assembled kettle would also require the original controller and its UART link.
+The published image was flashed to a separate 4 MiB ESP8266EX. Esptool verified the complete 4 MiB against the binary. It booted into AT 0.40.0.0 with SDK 1.3.0 and reported no station association. The module scanned for nearby Wi-Fi networks and a separate computer detected its temporary test access point with the matching BSSID. The temporary settings were gone after reset. These checks cover the ESP firmware and radio. Testing an assembled kettle would also require the original controller and its UART link.
