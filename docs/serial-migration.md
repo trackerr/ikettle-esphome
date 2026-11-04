@@ -100,4 +100,12 @@ python -m esptool --chip esp8266 --port COM7 --baud 115200 --before no-reset --a
 
 Start another fresh ROM boot and read the full flash back to a third file with the same read command. Check the result against the original backup byte for byte. Disconnect power, remove the temporary boot strap, reconnect the `U2` to `B2` jumper and reassemble before returning to mains. The full serial restore procedure follows the flash layout and verified backup. A stock rollback on the installed kettle has not been exercised.
 
+### Why the Espressif download is not a complete backup
+
+On the tested unit, `bin/at/user1.1024.new.2.bin` from Espressif's NONOS SDK 1.3.0 (`esp_iot_sdk_v1.3.0_15_08_08.zip`) matched the 262,948 bytes at `0x1000` exactly. Its SHA-256 is `84222baa92782ede25d6093bcad88243c43fd98c112ab2fd4c9ad2112d89c068`. The SDK's `boot_v1.4(b1).bin` differed from the installed bootloader by one flash header byte. The full dump also had data in other sectors, including the last three sectors used for ESP8266 system parameters. [Espressif ESP8266EX resources](https://www.espressif.com/en/products/socs/esp8266ex/resources/)
+
+A generic SDK-based AT installation booted on a spare ESP8266. It has not been verified as a substitute for a complete stock restore on an assembled kettle. Read and retain your own complete backup before installing ESPHome. The separate kettle-controller update image from the Smarter app cannot restore the ESP8266. The repository provides ESPHome source to build with your own settings. It does not publish device dumps or third-party firmware binaries.
+
+### Stock OTA experiment
+
 The stock `AT+CIUPDATE` investigation used a spare ESP8266. A custom bridge successfully migrated that module after a serial AT command. The experiment did not establish an equivalent way to start migration over Wi-Fi on an assembled kettle. The original updater's slot image format and ESPHome's factory image format differ. The serial procedure above is the supported first install and stock recovery route. Once ESPHome is installed, use its [encrypted OTA and recovery options](operations.md#updates-and-recovery).
