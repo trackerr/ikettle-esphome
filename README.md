@@ -7,6 +7,7 @@ This route was demonstrated on one **SMK20-EU** base with an ESP8266EX, 4 MiB of
 | Guide | What it covers |
 | --- | --- |
 | [Serial migration and stock recovery](docs/serial-migration.md) | Check the board, isolate ESP RX, back up the original ESP flash twice, install ESPHome and repair the UART link. |
+| [Clean stock ESP-AT recovery](docs/clean-stock-recovery.md) | Download or build a clean 4 MiB recovery image for matching ESP8266 hardware when an original backup is unavailable. |
 | [Configuration and operation](docs/operations.md) | Join Wi-Fi, add the kettle to Home Assistant, use the controls and diagnose communication problems. |
 | [Water calibration](docs/water-calibration.md) | Measure your own kettle before enabling mL, cups and the low-water indicator. |
 | [Home Assistant examples](home-assistant/README.md) | Dashboard card and drinking-temperature audio automation. |
